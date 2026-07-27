@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="MiraCosta CS 111 Summer 2026 期末复习：15 个 Topic 知识点、65 题模拟考试、实时错题解析。"
+      content="MiraCosta CS 111 Summer 2026 final review with 15 course topics, a 65-question mock exam, and instant explanations for missed questions."
     />
     <meta name="theme-color" content="#101826" />
     <title>CS 111 Final Lab</title>
@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <header class="site-header">
-      <a class="brand" href="#overview" aria-label="CS 111 Final Lab 首页">
+      <a class="brand" href="#overview" aria-label="CS 111 Final Lab home">
         <span class="brand-mark" aria-hidden="true">J</span>
         <span>
           <strong>CS 111</strong>
@@ -24,17 +24,17 @@
         </span>
       </a>
 
-      <nav class="primary-nav" aria-label="主要导航">
-        <button class="nav-link is-active" data-view="overview">复习路线</button>
-        <button class="nav-link" data-view="knowledge">知识点</button>
-        <button class="nav-link" data-view="exam">模拟考试</button>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <button class="nav-link is-active" data-view="overview">Study Plan</button>
+        <button class="nav-link" data-view="knowledge">Knowledge Map</button>
+        <button class="nav-link" data-view="exam">Mock Exam</button>
         <button class="nav-link" data-view="mistakes">
-          错题本
-          <span class="mistake-count" id="mistake-count" aria-label="错题数量">0</span>
+          Mistake Notebook
+          <span class="mistake-count" id="mistake-count" aria-label="Mistake count">0</span>
         </button>
       </nav>
 
-      <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="打开导航">
+      <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Open navigation">
         <span></span><span></span>
       </button>
     </header>
@@ -46,15 +46,15 @@
             <p class="eyebrow">SUMMER 2026 · MIRACOSTA</p>
             <h1>FINAL<br /><em>READY.</em></h1>
             <p class="poster-lede">
-              用课程讲义的语言复习，用真实考试窗口计时，用每一道错题决定下一步。
+              Review in the language of the course, practice within the real exam window, and let every mistake choose your next step.
             </p>
             <div class="poster-actions">
-              <button class="button button-primary" data-start-mode="full">开始 100 分钟模拟</button>
-              <button class="button button-ghost" data-go-view="knowledge">浏览 15 个 Topic</button>
+              <button class="button button-primary" data-start-mode="full">Start the 100-Minute Simulation</button>
+              <button class="button button-ghost" data-go-view="knowledge">Browse 15 Topics</button>
             </div>
           </div>
 
-          <div class="poster-visual" aria-label="考试关键数据">
+          <div class="poster-visual" aria-label="Key exam facts">
             <div class="deadline">
               <span>FINAL //</span>
               <strong>07.28</strong>
@@ -67,46 +67,46 @@
           </div>
         </div>
 
-        <section class="fact-band" aria-label="考试概览">
+        <section class="fact-band" aria-label="Exam overview">
           <div><strong>65</strong><span>questions</span></div>
           <div><strong>65</strong><span>points</span></div>
           <div><strong>100</strong><span>minute window</span></div>
           <p>
-            Canvas 显示 <b>Time Limit: None</b>，但考试仅在 8:35–10:15 开放。请按 100 分钟硬计时准备。
+            Canvas displays <b>Time Limit: None</b>, but the exam is available only from 8:35–10:15 AM. Prepare for a hard 100-minute window.
           </p>
         </section>
 
         <section class="route-section">
           <div class="section-intro">
             <p class="eyebrow">YOUR ROUTE</p>
-            <h2>先修薄弱点，再做整卷。</h2>
-            <p>建议顺序来自你当前可见的测验记录与课程后半程内容状态；0 分记录按“可能未作答”处理，不直接等同于不会。</p>
+            <h2>Repair weak areas, then take the full exam.</h2>
+            <p>The sequence reflects your visible quiz history and the status of late-course material. A zero is treated as possibly unattempted, not automatically as a lack of understanding.</p>
           </div>
 
           <ol class="route-list">
             <li>
               <span>01</span>
               <div>
-                <strong>补核心模式</strong>
-                <p>方法与参数 → 数组与 currentSize → 类、封装与构造器。</p>
+                <strong>Rebuild the core patterns</strong>
+                <p>Methods and parameters → arrays and currentSize → classes, encapsulation, and constructors.</p>
               </div>
-              <button data-go-view="knowledge">开始复习</button>
+              <button data-go-view="knowledge">Start Reviewing</button>
             </li>
             <li>
               <span>02</span>
               <div>
-                <strong>100 分钟闭卷模拟</strong>
-                <p>50 道选择 + 15 道 trace/short-answer；题型比例是复习建模，并非锁定考试泄题。</p>
+                <strong>100-minute closed-book simulation</strong>
+                <p>A fresh all-multiple-choice form from a 140-question bank, with every Topic and all six domains represented.</p>
               </div>
-              <button data-start-mode="full">开始计时</button>
+              <button data-start-mode="full">Start the Timer</button>
             </li>
             <li>
               <span>03</span>
               <div>
-                <strong>只重做错题</strong>
-                <p>每次错误都会保存 Topic、正确答案与解析，刷新页面也不会消失。</p>
+                <strong>Retry only missed questions</strong>
+                <p>Every mistake saves its Topic, correct answer, and explanation—even after the page is refreshed.</p>
               </div>
-              <button data-go-view="mistakes">打开错题本</button>
+              <button data-go-view="mistakes">Open the Notebook</button>
             </li>
           </ol>
         </section>
@@ -114,15 +114,28 @@
         <section class="priority-section">
           <div class="section-intro">
             <p class="eyebrow">HIGH YIELD</p>
-            <h2>考前优先级</h2>
+            <h2>Priorities before the exam</h2>
           </div>
           <div class="priority-lines" id="priority-lines"></div>
         </section>
 
         <section class="scope-note">
-          <strong>范围边界</strong>
+          <strong>Scope boundary</strong>
           <p>
-            Topics 1–13 有当前课程讲义支持。Topic 14 在 Canvas 有当前要求但 OLI 显示未完成；Topic 15 页面状态较旧，本站标为低置信度补充。锁定的期末题目与受保护测验答案没有被访问或复制。
+            Topics 1–13 are supported by current course slides. Topic 14 has a current Canvas requirement but appears incomplete in OLI; Topic 15 has older page status and is marked as low-confidence supplemental coverage. Locked final questions and protected quiz answers were not accessed or copied.
+          </p>
+        </section>
+
+        <section class="scope-note">
+          <strong>Public difficulty benchmarks</strong>
+          <p>
+            The harder questions are original or substantially adapted from the style of public introductory Java materials from
+            <a href="https://catalog.foothill.edu/course-outlines/C-S-1A/" target="_blank" rel="noreferrer">Foothill College</a>,
+            <a href="https://catalog.cccd.edu/courses/cs-a170/" target="_blank" rel="noreferrer">Coast Community College District</a>,
+            <a href="https://www.cs.colostate.edu/~cs165/.Fall19/studyguides/M1PracticeSol.pdf" target="_blank" rel="noreferrer">Colorado State CS165</a>,
+            <a href="https://people.willamette.edu/~gorr/classes/cs141/study/Spring2018/exam2Sp2018cs141.pdf" target="_blank" rel="noreferrer">Willamette CS141</a>,
+            <a href="https://oli.cmu.edu/courses/introduction-to-programming-in-java-o-f/" target="_blank" rel="noreferrer">CMU OLI</a>, and
+            <a href="https://ocw.mit.edu/courses/6-092-introduction-to-programming-in-java-january-iap-2010/" target="_blank" rel="noreferrer">MIT OpenCourseWare</a>.
           </p>
         </section>
       </section>
@@ -131,17 +144,17 @@
         <div class="workspace-heading">
           <div>
             <p class="eyebrow">KNOWLEDGE MAP</p>
-            <h1>15 个 Topic，一条知识链。</h1>
+            <h1>15 Topics, one connected knowledge map.</h1>
           </div>
           <label class="search-field">
-            <span>搜索知识点</span>
-            <input id="topic-search" type="search" placeholder="例如 array、constructor、循环…" />
+            <span>Search the knowledge map</span>
+            <input id="topic-search" type="search" placeholder="Try array, constructor, loop…" />
           </label>
         </div>
 
-        <div class="topic-filter" id="topic-filter" role="group" aria-label="按单元筛选"></div>
+        <div class="topic-filter" id="topic-filter" role="group" aria-label="Filter by unit"></div>
         <div class="topic-list" id="topic-list"></div>
-        <p class="empty-state" id="topic-empty" hidden>没有匹配的 Topic。试试其他关键词。</p>
+        <p class="empty-state" id="topic-empty" hidden>No matching Topic. Try another keyword.</p>
       </section>
 
       <section class="view" id="exam-view" data-view-panel="exam">
@@ -149,41 +162,41 @@
           <div class="workspace-heading">
             <div>
               <p class="eyebrow">MOCK EXAM</p>
-              <h1>先作答，再看解释。</h1>
-              <p>提交当前题后立即判分。答错会显示正确答案、课程概念解释，并自动进入错题本。</p>
+              <h1>Answer first. Read the explanation second.</h1>
+              <p>Each submission is graded immediately. A missed answer reveals the correct response, explains the course concept, and enters your Mistake Notebook automatically.</p>
             </div>
           </div>
 
           <div class="mode-selector">
             <article>
               <span>FULL SIMULATION</span>
-              <strong>65 题 · 100 分钟</strong>
-              <p>覆盖 Topics 1–15，按照当前课程范围与大纲中的混合题型模拟。</p>
-              <button class="button button-primary" data-start-mode="full">开始完整模拟</button>
+              <strong>65 questions · 100 minutes</strong>
+              <p>Randomly assembled from 140 multiple-choice questions: 10 foundational, 35 standard, and 20 challenge questions.</p>
+              <button class="button button-primary" data-start-mode="full">Start Full Simulation</button>
             </article>
             <article>
               <span>FOCUS SPRINT</span>
-              <strong>10 题 · 不计时</strong>
-              <p>随机抽取 10 题，用于短时复习；提交后同样提供实时解析。</p>
-              <button class="button button-dark" data-start-mode="quick">开始快速练习</button>
+              <strong>10 questions · untimed</strong>
+              <p>Draws 10 random questions for a short review session, with the same instant feedback after each submission.</p>
+              <button class="button button-dark" data-start-mode="quick">Start Focus Sprint</button>
             </article>
             <article>
               <span>RETRY MISTAKES</span>
-              <strong>错题专项</strong>
-              <p>只练习本机保存的历史错题，直到知识点从“认识”变成“会做”。</p>
-              <button class="button button-dark" id="retry-mistakes">重做错题</button>
+              <strong>Targeted mistake practice</strong>
+              <p>Practice only the questions missed in this browser until recognition becomes reliable performance.</p>
+              <button class="button button-dark" id="retry-mistakes">Retry Mistakes</button>
             </article>
           </div>
         </div>
 
         <div id="exam-session" class="exam-session" hidden>
           <div class="exam-toolbar">
-            <button class="text-button" id="quit-exam">结束本次练习</button>
+            <button class="text-button" id="quit-exam">End This Session</button>
             <div class="exam-progress-label">
               <span id="exam-mode-label">FULL SIMULATION</span>
               <strong><span id="question-position">1</span>/<span id="question-total">65</span></strong>
             </div>
-            <time id="exam-timer" aria-label="剩余时间">100:00</time>
+            <time id="exam-timer" aria-label="Time remaining">100:00</time>
           </div>
           <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
 
@@ -197,12 +210,12 @@
             <form id="answer-form">
               <fieldset id="choice-fieldset"></fieldset>
               <label id="short-answer-wrap" class="short-answer" hidden>
-                <span>你的答案</span>
-                <textarea id="short-answer" rows="4" placeholder="写出 exact output、解释或 Java 代码…"></textarea>
+                <span>Your answer</span>
+                <textarea id="short-answer" rows="4" placeholder="Write the exact output, an explanation, or Java code…"></textarea>
               </label>
               <div class="question-actions">
-                <button class="button button-primary" id="check-answer" type="submit">提交本题</button>
-                <span class="keyboard-hint">选择题可按 1–4，Enter 提交</span>
+                <button class="button button-primary" id="check-answer" type="submit">Submit Answer</button>
+                <span class="keyboard-hint">For multiple choice, press 1–4 and Enter to submit</span>
               </div>
             </form>
           </article>
@@ -215,11 +228,11 @@
               <div class="correct-answer" id="correct-answer"></div>
             </div>
             <div class="self-grade" id="self-grade" hidden>
-              <span>对照参考答案后：</span>
-              <button class="button button-dark" data-self-grade="correct">我答对了</button>
-              <button class="button button-ghost" data-self-grade="wrong">需要复习</button>
+              <span>After comparing with the reference answer:</span>
+              <button class="button button-dark" data-self-grade="correct">My Answer Is Correct</button>
+              <button class="button button-ghost" data-self-grade="wrong">I Need to Review</button>
             </div>
-            <button class="button button-primary" id="next-question" hidden>下一题</button>
+            <button class="button button-primary" id="next-question" hidden>Next Question</button>
           </aside>
         </div>
 
@@ -230,24 +243,24 @@
         <div class="workspace-heading">
           <div>
             <p class="eyebrow">MISTAKE NOTEBOOK</p>
-            <h1>错题不是记录，是下一轮题单。</h1>
-            <p>数据只保存在当前浏览器的 localStorage，不会上传。</p>
+            <h1>Mistakes are your next practice set.</h1>
+            <p>Data stays in this browser's localStorage and is never uploaded.</p>
           </div>
-          <button class="text-button danger" id="clear-mistakes">清空错题记录</button>
+          <button class="text-button danger" id="clear-mistakes">Clear Mistake History</button>
         </div>
         <div class="mistake-summary" id="mistake-summary"></div>
         <div class="mistake-list" id="mistake-list"></div>
         <div class="empty-mistakes" id="empty-mistakes">
-          <strong>还没有错题。</strong>
-          <p>完成一次快速练习或完整模拟后，这里会自动建立你的复习清单。</p>
-          <button class="button button-primary" data-start-mode="quick">先做 10 题</button>
+          <strong>No mistakes yet.</strong>
+          <p>Complete a Focus Sprint or Full Simulation and your review list will be built here automatically.</p>
+          <button class="button button-primary" data-start-mode="quick">Try 10 Questions</button>
         </div>
       </section>
     </main>
 
     <footer>
       <p>CS 111 Final Lab · Original study aid based on visible course materials · Updated July 26, 2026</p>
-      <p>不是官方考试，也不包含锁定或受保护的考试内容。</p>
+      <p>This is not an official exam and contains no locked or protected exam content.</p>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

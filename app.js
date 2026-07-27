@@ -5,12 +5,12 @@
   const STORAGE_KEY = "cs111-final-lab-mistakes-v1";
   const VIEWS = ["overview", "knowledge", "exam", "mistakes"];
   const DOMAIN_GROUPS = [
-    { name: "基础 + 数据", ids: [...range(1, 14), 51] },
-    { name: "方法 + 参数", ids: [...range(15, 22), 52, 53] },
-    { name: "分支 + 循环", ids: [...range(23, 35), 54, 55] },
-    { name: "数组 + 引用", ids: [...range(36, 45), 56, 57, 61, 62] },
-    { name: "对象 + 类设计", ids: [...range(46, 50), 58, 59, 60, 63] },
-    { name: "后续 Topic", ids: [64, 65] },
+    { name: "Fundamentals + Data", topicIds: [1, 2, 3, 4] },
+    { name: "Methods + Parameters", topicIds: [5, 6] },
+    { name: "Branching + Loops", topicIds: [7, 8] },
+    { name: "Arrays + References", topicIds: [9, 10] },
+    { name: "Objects + Class Design", topicIds: [11, 12, 13] },
+    { name: "Possible Late Topics", topicIds: [14, 15] },
   ];
 
   const state = {
@@ -98,7 +98,7 @@
   function renderMistakeCount() {
     const unresolved = Object.values(state.mistakes).filter((item) => !item.resolved).length;
     el.mistakeCount.textContent = String(unresolved);
-    el.mistakeCount.setAttribute("aria-label", `${unresolved} 道待复习错题`);
+    el.mistakeCount.setAttribute("aria-label", `${unresolved} unresolved mistakes`);
   }
 
   function recordWrong(question, userAnswer) {
@@ -108,7 +108,7 @@
       topic: question.topic,
       count: (previous.count || 0) + 1,
       lastSeen: new Date().toISOString(),
-      lastAnswer: userAnswer || "未作答",
+      lastAnswer: userAnswer || "Not answered",
       resolved: false,
     };
     saveMistakes();
@@ -142,7 +142,7 @@
     });
     el.nav.classList.remove("is-open");
     el.menuToggle.setAttribute("aria-expanded", "false");
-    el.menuToggle.setAttribute("aria-label", "打开导航");
+    el.menuToggle.setAttribute("aria-label", "Open navigation");
     if (updateHash) history.replaceState(null, "", `#${view}`);
     if (view === "mistakes") renderMistakes();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -161,7 +161,7 @@
 
   function renderTopicFilters() {
     const units = [...new Set(DATA.topics.map((topic) => topic.unit))];
-    const items = [{ key: "all", label: "全部 Topic" }].concat(
+    const items = [{ key: "all", label: "All Topics" }].concat(
       units.map((unit) => ({ key: unit, label: unitLabel(unit) })),
     );
     el.topicFilter.innerHTML = items
@@ -174,7 +174,7 @@
 
   function topicConfidence(topic) {
     if (topic.confidence === "confirmed") return "";
-    const label = topic.confidence === "possible" ? "可能考" : "低置信度";
+    const label = topic.confidence === "possible" ? "Possible coverage" : "Low confidence";
     return `<span class="confidence ${topic.confidence}">${label}</span>`;
   }
 
@@ -211,9 +211,9 @@
                 <ul>
                   ${topic.must.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
                 </ul>
-                <p class="pitfall"><strong>高频陷阱：</strong>${escapeHtml(topic.pitfall)}</p>
+                <p class="pitfall"><strong>Frequent pitfall:</strong> ${escapeHtml(topic.pitfall)}</p>
                 <div class="topic-actions">
-                  <button data-practice-topic="${topic.id}">练这个 Topic</button>
+                  <button data-practice-topic="${topic.id}">Practice This Topic</button>
                 </div>
               </div>
               <pre class="topic-code"><code>${escapeHtml(topic.example)}</code></pre>
@@ -243,16 +243,124 @@
     return copy;
   }
 
+  function chooseQuestion(candidates, selected) {
+    const available = shuffle(candidates).filter((question) => !selected.has(question.id));
+    const question = available[0];
+    if (!question) return null;
+    selected.add(question.id);
+    return question;
+  }
+
+  function assembleFullExam() {
+    const selected = new Set();
+    const multipleChoice = DATA.questions.filter((question) => question.type === "mc");
+    const collegeStyle = multipleChoice.filter(
+      (question) => question.sourceStyle === "public-college",
+    );
+
+    for (const topic of DATA.topics) {
+      for (const difficulty of ["standard", "challenge"]) {
+        const question = chooseQuestion(
+          collegeStyle.filter(
+            (candidate) =>
+              candidate.topicId === topic.id && candidate.difficulty === difficulty,
+          ),
+          selected,
+        );
+        if (!question) {
+          throw new Error(`Missing ${difficulty} multiple-choice coverage for Topic ${topic.id}`);
+        }
+      }
+    }
+
+    const difficultyTargets = {
+      foundational: 10,
+      standard: 35,
+      challenge: 20,
+    };
+    for (const [difficulty, target] of Object.entries(difficultyTargets)) {
+      let current = [...selected].filter(
+        (id) => questionById(id).difficulty === difficulty,
+      ).length;
+      while (current < target) {
+        const question = chooseQuestion(
+          multipleChoice.filter((candidate) => candidate.difficulty === difficulty),
+          selected,
+        );
+        if (!question) {
+          throw new Error(`Not enough ${difficulty} questions to assemble the exam`);
+        }
+        current += 1;
+      }
+    }
+
+    while (selected.size < 65) {
+      const question = chooseQuestion(
+        multipleChoice,
+        selected,
+      );
+      if (!question) break;
+    }
+
+    return shuffle([...selected]).slice(0, 65);
+  }
+
+  function assembleQuickExam() {
+    const selected = new Set();
+    const selectedTopics = new Set();
+    const multipleChoice = DATA.questions.filter((question) => question.type === "mc");
+    const difficultySlots = shuffle([
+      "foundational",
+      "foundational",
+      "foundational",
+      "standard",
+      "standard",
+      "standard",
+      "standard",
+      "challenge",
+      "challenge",
+      "challenge",
+    ]);
+
+    DOMAIN_GROUPS.forEach((domain, index) => {
+      const question = chooseQuestion(
+        multipleChoice.filter(
+          (candidate) =>
+            domain.topicIds.includes(candidate.topicId) &&
+            candidate.difficulty === difficultySlots[index],
+        ),
+        selected,
+      );
+      if (question) selectedTopics.add(question.topicId);
+    });
+
+    for (const difficulty of difficultySlots.slice(DOMAIN_GROUPS.length)) {
+      const distinctTopicCandidates = multipleChoice.filter(
+        (candidate) =>
+          candidate.difficulty === difficulty && !selectedTopics.has(candidate.topicId),
+      );
+      const question =
+        chooseQuestion(distinctTopicCandidates, selected) ||
+        chooseQuestion(
+          multipleChoice.filter((candidate) => candidate.difficulty === difficulty),
+          selected,
+        );
+      if (question) selectedTopics.add(question.topicId);
+    }
+
+    return shuffle([...selected]).slice(0, 10);
+  }
+
   function startExam(mode, customIds = null) {
     let ids;
     let label;
     let timed = false;
 
     if (customIds?.length) {
-      ids = [...customIds];
+      ids = shuffle(customIds);
       label = ids.length === 1 ? "SINGLE RETRY" : "TOPIC PRACTICE";
     } else if (mode === "quick") {
-      ids = shuffle(DATA.questions.map((question) => question.id)).slice(0, 10);
+      ids = assembleQuickExam();
       label = "FOCUS SPRINT";
     } else if (mode === "mistakes") {
       ids = Object.values(state.mistakes)
@@ -260,12 +368,12 @@
         .sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen))
         .map((item) => Number(item.id));
       if (!ids.length) {
-        showToast("错题本里目前没有待复习题目。");
+        showToast("There are no unresolved questions in the Mistake Notebook.");
         return;
       }
       label = "RETRY MISTAKES";
     } else {
-      ids = DATA.questions.map((question) => question.id);
+      ids = assembleFullExam();
       label = "FULL SIMULATION";
       timed = true;
     }
@@ -314,7 +422,7 @@
 
   function renderTimer() {
     if (!state.session?.timed) {
-      el.timer.textContent = "不限时";
+      el.timer.textContent = "Untimed";
       return;
     }
     const seconds = Math.max(0, state.session.secondsLeft);
@@ -342,7 +450,11 @@
     el.questionPosition.textContent = String(position);
     el.progressFill.style.width = `${((position - 1) / state.session.ids.length) * 100}%`;
     el.topic.textContent = `Q${question.id} · ${question.topic}`;
-    el.type.textContent = question.type === "mc" ? "MULTIPLE CHOICE" : "TRACE / SHORT ANSWER";
+    const difficulty = question.difficulty.toUpperCase();
+    el.type.textContent =
+      question.type === "mc"
+        ? `MULTIPLE CHOICE · ${difficulty}`
+        : `TRACE / SHORT ANSWER · ${difficulty}`;
     el.prompt.textContent = question.prompt;
 
     if (question.code) {
@@ -415,12 +527,12 @@
         ? "CORRECT"
         : "REVIEW NOW";
     el.feedbackTitle.textContent = manual
-      ? "对照参考答案进行自评"
+      ? "Compare your response with the reference answer"
       : correct
-        ? "答对了。"
-        : "这道题需要立刻修正。";
+        ? "Correct."
+        : "Repair this concept now.";
     el.feedbackExplanation.textContent = question.explanation;
-    el.correctAnswer.innerHTML = `<strong>参考答案：</strong>${escapeHtml(answerLabel(question))}`;
+    el.correctAnswer.innerHTML = `<strong>Reference answer:</strong> ${escapeHtml(answerLabel(question))}`;
     el.selfGrade.hidden = !manual;
     el.nextQuestion.hidden = manual;
     el.feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -451,7 +563,7 @@
     if (question.type === "mc") {
       const selected = el.choiceFieldset.querySelector("input:checked");
       if (!selected) {
-        showToast("请先选择一个答案。");
+        showToast("Select an answer before submitting.");
         return;
       }
       const userAnswer = selected.value;
@@ -470,7 +582,7 @@
 
     const value = el.shortAnswer.value.trim();
     if (!value) {
-      showToast("请先写下你的答案，再查看解析。");
+      showToast("Write your answer before viewing the explanation.");
       return;
     }
     el.shortAnswer.disabled = true;
@@ -490,7 +602,9 @@
     const question = currentQuestion();
     finalizeAnswer(question, correct, state.session.pendingAnswer);
     el.feedbackStatus.textContent = correct ? "SELF-MARKED CORRECT" : "ADDED TO MISTAKES";
-    el.feedbackTitle.textContent = correct ? "已计为答对。" : "已加入错题本。";
+    el.feedbackTitle.textContent = correct
+      ? "Counted as correct."
+      : "Added to the Mistake Notebook.";
   }
 
   function nextQuestion() {
@@ -508,8 +622,8 @@
       session.ids.forEach((id) => {
         if (answered.has(id)) return;
         const question = questionById(id);
-        session.results.push({ id, correct: false, userAnswer: "未作答" });
-        recordWrong(question, "未作答");
+        session.results.push({ id, correct: false, userAnswer: "Not answered" });
+        recordWrong(question, "Not answered");
       });
     }
 
@@ -521,15 +635,18 @@
     const seconds = elapsedSeconds % 60;
     const title =
       percent >= 90
-        ? "可以进入精修阶段。"
+        ? "You are ready for precision review."
         : percent >= 80
-          ? "接近考试状态。"
+          ? "You are approaching exam readiness."
           : percent >= 66
-            ? "需要定点修复。"
-            : "先重建核心模式。";
+            ? "Targeted repair is the next step."
+            : "Rebuild the core patterns first.";
 
     const diagnostics = DOMAIN_GROUPS.map((domain) => {
-      const domainResults = session.results.filter((result) => domain.ids.includes(result.id));
+      const domainResults = session.results.filter((result) => {
+        const question = questionById(result.id);
+        return question && domain.topicIds.includes(question.topicId);
+      });
       const domainCorrect = domainResults.filter((result) => result.correct).length;
       return {
         name: domain.name,
@@ -552,15 +669,15 @@
         </div>
         <div class="results-copy">
           <h1>${title}</h1>
-          <p>正确率 ${percent}% · 用时 ${minutes}:${String(seconds).padStart(2, "0")}。低于 80% 的领域应在下一次整卷前专项重做。</p>
+          <p>${percent}% correct · ${minutes}:${String(seconds).padStart(2, "0")} elapsed. Retry every domain below 80% before your next full simulation.</p>
           <div class="results-actions">
-            <button class="button button-primary" data-result-action="mistakes">重做错题</button>
-            <button class="button button-dark" data-result-action="knowledge">回到知识点</button>
-            <button class="button button-ghost" data-result-action="setup">选择其他模式</button>
+            <button class="button button-primary" data-result-action="mistakes">Retry Mistakes</button>
+            <button class="button button-dark" data-result-action="knowledge">Return to Knowledge Map</button>
+            <button class="button button-ghost" data-result-action="setup">Choose Another Mode</button>
           </div>
         </div>
       </section>
-      <section class="diagnostic-list" aria-label="分领域诊断">
+      <section class="diagnostic-list" aria-label="Performance by domain">
         ${diagnostics
           .map(
             (domain) => `
@@ -602,9 +719,9 @@
       Object.entries(topicCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "—";
 
     el.mistakeSummary.innerHTML = `
-      <div><strong>${unresolved.length}</strong><span>待订正</span></div>
-      <div><strong>${attempts}</strong><span>累计错误</span></div>
-      <div><strong>${escapeHtml(weakest)}</strong><span>最弱标签</span></div>`;
+      <div><strong>${unresolved.length}</strong><span>to review</span></div>
+      <div><strong>${attempts}</strong><span>total misses</span></div>
+      <div><strong>${escapeHtml(weakest)}</strong><span>weakest tag</span></div>`;
     el.emptyMistakes.hidden = entries.length > 0;
     el.mistakeList.hidden = entries.length === 0;
     el.mistakeList.innerHTML = entries
@@ -616,10 +733,10 @@
             <span>Q${question.id}</span>
             <div>
               <h3>${escapeHtml(question.prompt)}</h3>
-              <small>${escapeHtml(question.topic)} · ${item.resolved ? "已订正" : `错误 ${item.count} 次`}</small>
+              <small>${escapeHtml(question.topic)} · ${item.resolved ? "resolved" : `missed ${item.count} time${item.count === 1 ? "" : "s"}`}</small>
             </div>
-            <p>${escapeHtml(question.explanation)}<br><strong>答案：</strong>${escapeHtml(answerLabel(question))}</p>
-            <button data-retry-id="${question.id}">${item.resolved ? "再练一次" : "立即重做"}</button>
+            <p>${escapeHtml(question.explanation)}<br><strong>Answer:</strong> ${escapeHtml(answerLabel(question))}</p>
+            <button data-retry-id="${question.id}">${item.resolved ? "Practice Again" : "Retry Now"}</button>
           </article>`;
       })
       .join("");
@@ -628,15 +745,17 @@
 
   function clearMistakes() {
     if (!Object.keys(state.mistakes).length) {
-      showToast("错题本已经是空的。");
+      showToast("The Mistake Notebook is already empty.");
       return;
     }
-    const confirmed = window.confirm("确定要清空当前浏览器中的全部错题记录吗？");
+    const confirmed = window.confirm(
+      "Clear all saved mistake history from this browser?",
+    );
     if (!confirmed) return;
     state.mistakes = {};
     saveMistakes();
     renderMistakes();
-    showToast("错题记录已清空。");
+    showToast("Mistake history cleared.");
   }
 
   function handleClick(event) {
@@ -670,7 +789,7 @@
     if (practiceButton) {
       const ids = questionsForTopic(Number(practiceButton.dataset.practiceTopic));
       if (!ids.length) {
-        showToast("这个 Topic 暂时没有独立题目。");
+        showToast("This Topic does not have a standalone question yet.");
         return;
       }
       startExam("topic", ids);
@@ -741,7 +860,7 @@
       const open = !el.nav.classList.contains("is-open");
       el.nav.classList.toggle("is-open", open);
       el.menuToggle.setAttribute("aria-expanded", String(open));
-      el.menuToggle.setAttribute("aria-label", open ? "关闭导航" : "打开导航");
+      el.menuToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
     });
     window.addEventListener("hashchange", () => {
       const view = location.hash.replace("#", "");
