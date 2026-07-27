@@ -27,6 +27,7 @@
       <nav class="primary-nav" aria-label="Primary navigation">
         <button class="nav-link is-active" data-view="overview">Study Plan</button>
         <button class="nav-link" data-view="knowledge">Knowledge Map</button>
+        <button class="nav-link" data-view="miracosta">MiraCosta Bank</button>
         <button class="nav-link" data-view="exam">Mock Exam</button>
         <button class="nav-link" data-view="mistakes">
           Mistake Notebook
@@ -157,6 +158,105 @@
         <p class="empty-state" id="topic-empty" hidden>No matching Topic. Try another keyword.</p>
       </section>
 
+      <section class="view" id="miracosta-view" data-view-panel="miracosta">
+        <div class="bank-hero">
+          <div>
+            <p class="eyebrow">MIRACOSTA-SPECIFIC PRACTICE</p>
+            <h1>A separate bank built from the public CS 111 trail.</h1>
+            <p>
+              These are original four-choice questions aligned to MiraCosta's public course catalog, instructor-managed GitHub practices and labs, Spring 2026 classroom templates, and limited historical review previews.
+            </p>
+          </div>
+          <div class="bank-number">
+            <strong id="miracosta-question-count">90</strong>
+            <span>source-tagged questions</span>
+          </div>
+        </div>
+
+        <section class="bank-stats" id="miracosta-stats" aria-label="MiraCosta bank coverage"></section>
+
+        <section class="bank-modes">
+          <article class="bank-mode bank-mode-featured">
+            <span>COMPREHENSIVE MIX</span>
+            <strong>30 questions · all 15 Topics</strong>
+            <p>Exactly 6 foundational, 16 standard, and 8 challenge questions, with at least one question from every Topic.</p>
+            <button class="button button-primary" data-start-mode="miracosta-full">Start Comprehensive Mix</button>
+          </article>
+          <article class="bank-mode">
+            <span>COVERAGE CHECK</span>
+            <strong>15 questions · one per Topic</strong>
+            <p>A fast, balanced pass through the complete public MiraCosta CS 111 sequence.</p>
+            <button class="button button-dark" data-start-mode="miracosta-coverage">Start Coverage Check</button>
+          </article>
+          <article class="bank-mode">
+            <span>HISTORICAL STYLE</span>
+            <strong>10 questions · older quiz emphasis</strong>
+            <p>Original questions emphasizing concepts visible in public 2019 and 2021 MiraCosta review materials.</p>
+            <button class="button button-dark" data-start-mode="miracosta-history">Start Historical-Style Set</button>
+          </article>
+        </section>
+
+        <section class="bank-builder" aria-labelledby="bank-builder-title">
+          <div>
+            <p class="eyebrow">CUSTOM RANDOM SET</p>
+            <h2 id="bank-builder-title">Build a targeted practice session.</h2>
+            <p>Choose a Topic, difficulty, and length. Questions are reshuffled every time.</p>
+          </div>
+          <div class="bank-controls">
+            <label>
+              <span>Topic</span>
+              <select id="miracosta-topic-filter">
+                <option value="all">All 15 Topics</option>
+              </select>
+            </label>
+            <label>
+              <span>Difficulty</span>
+              <select id="miracosta-difficulty-filter">
+                <option value="all">All difficulties</option>
+                <option value="foundational">Foundational</option>
+                <option value="standard">Standard</option>
+                <option value="challenge">Challenge</option>
+              </select>
+            </label>
+            <label>
+              <span>Questions</span>
+              <select id="miracosta-length-filter">
+                <option value="10">10 questions</option>
+                <option value="20">20 questions</option>
+                <option value="30">30 questions</option>
+                <option value="45">45 questions</option>
+              </select>
+            </label>
+            <button class="button button-primary" id="start-miracosta-custom">Build Random Set</button>
+          </div>
+        </section>
+
+        <section class="bank-coverage-section">
+          <div class="section-intro">
+            <p class="eyebrow">TOPIC COVERAGE</p>
+            <h2>Six dedicated questions for every Topic.</h2>
+            <p>Each Topic contains two foundational, two standard, and two challenge questions. Start any row as a focused six-question drill.</p>
+          </div>
+          <div class="bank-topic-grid" id="miracosta-topic-grid"></div>
+        </section>
+
+        <section class="bank-sources-section">
+          <div class="section-intro">
+            <p class="eyebrow">SOURCE REGISTER</p>
+            <h2>What was found—and how much to trust it.</h2>
+            <p>Official repositories define the strongest alignment. Historical previews are used only for emphasis and style; student-created material is independently checked and never treated as official.</p>
+          </div>
+          <div class="bank-source-list" id="miracosta-source-list"></div>
+        </section>
+
+        <section class="scope-note bank-boundary">
+          <strong>Integrity boundary</strong>
+          <p>
+            This is a study bank, not a leaked exam. No current locked Canvas question, answer key, paywalled page, or student submission was copied. Every question is newly written and links back to the public source family that informed it.
+          </p>
+        </section>
+      </section>
+
       <section class="view" id="exam-view" data-view-panel="exam">
         <div id="exam-setup" class="exam-setup">
           <div class="workspace-heading">
@@ -226,6 +326,7 @@
               <h3 id="feedback-title"></h3>
               <p id="feedback-explanation"></p>
               <div class="correct-answer" id="correct-answer"></div>
+              <div class="feedback-source" id="feedback-source" hidden></div>
             </div>
             <div class="self-grade" id="self-grade" hidden>
               <span>After comparing with the reference answer:</span>
@@ -259,13 +360,14 @@
     </main>
 
     <footer>
-      <p>CS 111 Final Lab · Original study aid based on visible course materials · Updated July 26, 2026</p>
+      <p>CS 111 Final Lab · Original study aid based on visible course materials · Updated July 27, 2026</p>
       <p>This is not an official exam and contains no locked or protected exam content.</p>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="data.js"></script>
+    <script src="miracosta-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

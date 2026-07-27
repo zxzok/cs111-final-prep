@@ -2,8 +2,10 @@
   "use strict";
 
   const DATA = window.COURSE_DATA;
+  const BANK = window.MIRACOSTA_BANK;
+  const ALL_QUESTIONS = [...DATA.questions, ...BANK.questions];
   const STORAGE_KEY = "cs111-final-lab-mistakes-v1";
-  const VIEWS = ["overview", "knowledge", "exam", "mistakes"];
+  const VIEWS = ["overview", "knowledge", "miracosta", "exam", "mistakes"];
   const DOMAIN_GROUPS = [
     { name: "Fundamentals + Data", topicIds: [1, 2, 3, 4] },
     { name: "Methods + Parameters", topicIds: [5, 6] },
@@ -21,6 +23,7 @@
     session: null,
     timerId: null,
     toastId: null,
+    returnView: "exam",
   };
 
   const el = {
@@ -32,6 +35,13 @@
     topicList: document.querySelector("#topic-list"),
     topicEmpty: document.querySelector("#topic-empty"),
     topicSearch: document.querySelector("#topic-search"),
+    miraQuestionCount: document.querySelector("#miracosta-question-count"),
+    miraStats: document.querySelector("#miracosta-stats"),
+    miraTopicGrid: document.querySelector("#miracosta-topic-grid"),
+    miraSourceList: document.querySelector("#miracosta-source-list"),
+    miraTopicFilter: document.querySelector("#miracosta-topic-filter"),
+    miraDifficultyFilter: document.querySelector("#miracosta-difficulty-filter"),
+    miraLengthFilter: document.querySelector("#miracosta-length-filter"),
     examSetup: document.querySelector("#exam-setup"),
     examSession: document.querySelector("#exam-session"),
     examResults: document.querySelector("#exam-results"),
@@ -54,6 +64,7 @@
     feedbackTitle: document.querySelector("#feedback-title"),
     feedbackExplanation: document.querySelector("#feedback-explanation"),
     correctAnswer: document.querySelector("#correct-answer"),
+    feedbackSource: document.querySelector("#feedback-source"),
     selfGrade: document.querySelector("#self-grade"),
     nextQuestion: document.querySelector("#next-question"),
     quitExam: document.querySelector("#quit-exam"),
@@ -79,7 +90,7 @@
   }
 
   function questionById(id) {
-    return DATA.questions.find((question) => question.id === Number(id));
+    return ALL_QUESTIONS.find((question) => question.id === Number(id));
   }
 
   function loadMistakes() {
@@ -151,6 +162,70 @@
   function renderOverview() {
     el.priorityLines.innerHTML = DATA.course.priorities
       .map((priority) => `<div>${escapeHtml(priority)}</div>`)
+      .join("");
+  }
+
+  function renderMiraCostaBank() {
+    const difficultyCounts = BANK.questions.reduce((counts, question) => {
+      counts[question.difficulty] = (counts[question.difficulty] || 0) + 1;
+      return counts;
+    }, {});
+    const officialCount = BANK.questions.filter((question) =>
+      ["Official course scope", "Official course organization", "Official practice", "Official lab", "Current public template"].includes(
+        question.sourceFamily,
+      ),
+    ).length;
+
+    el.miraQuestionCount.textContent = String(BANK.questions.length);
+    el.miraStats.innerHTML = `
+      <div><strong>${BANK.questions.length}</strong><span>multiple-choice questions</span></div>
+      <div><strong>${DATA.topics.length}/15</strong><span>Topics represented</span></div>
+      <div><strong>${difficultyCounts.foundational}/${difficultyCounts.standard}/${difficultyCounts.challenge}</strong><span>foundation / standard / challenge</span></div>
+      <div><strong>${officialCount}</strong><span>questions anchored to official public sources</span></div>`;
+
+    el.miraTopicFilter.innerHTML =
+      '<option value="all">All 15 Topics</option>' +
+      DATA.topics
+        .map(
+          (topic) =>
+            `<option value="${topic.id}">T${topic.id} — ${escapeHtml(topic.topic.replace(/^Topic \d+ - /, ""))}</option>`,
+        )
+        .join("");
+
+    el.miraTopicGrid.innerHTML = DATA.topics
+      .map((topic) => {
+        const topicQuestions = BANK.questions.filter(
+          (question) => question.topicId === topic.id,
+        );
+        const official = topicQuestions.filter((question) =>
+          question.sourceFamily.startsWith("Official") ||
+          question.sourceFamily.startsWith("Current"),
+        ).length;
+        return `
+          <article class="bank-topic-card">
+            <span>T${String(topic.id).padStart(2, "0")}</span>
+            <div>
+              <strong>${escapeHtml(topic.topic.replace(/^Topic \d+ - /, ""))}</strong>
+              <small>${topicQuestions.length} questions · ${official} official-source anchored</small>
+            </div>
+            <button data-miracosta-topic="${topic.id}">Practice all ${topicQuestions.length}</button>
+          </article>`;
+      })
+      .join("");
+
+    el.miraSourceList.innerHTML = BANK.sources
+      .map(
+        (source) => `
+          <article class="bank-source-card">
+            <div>
+              <span class="source-confidence ${source.confidence}">${source.confidence.toUpperCase()}</span>
+              <small>${escapeHtml(source.family)}</small>
+            </div>
+            <h3>${escapeHtml(source.title)}</h3>
+            <p>${escapeHtml(source.note)}</p>
+            <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">Open public source <span aria-hidden="true">↗</span></a>
+          </article>`,
+      )
       .join("");
   }
 
@@ -351,14 +426,113 @@
     return shuffle([...selected]).slice(0, 10);
   }
 
-  function startExam(mode, customIds = null) {
+  function assembleMiraCostaFull() {
+    const selected = new Set();
+    const topicIds = shuffle(DATA.topics.map((topic) => topic.id));
+
+    topicIds.forEach((topicId) => {
+      chooseQuestion(
+        BANK.questions.filter(
+          (question) =>
+            question.topicId === topicId && question.difficulty === "standard",
+        ),
+        selected,
+      );
+    });
+
+    topicIds.slice(0, 6).forEach((topicId) => {
+      chooseQuestion(
+        BANK.questions.filter(
+          (question) =>
+            question.topicId === topicId && question.difficulty === "foundational",
+        ),
+        selected,
+      );
+    });
+    topicIds.slice(6, 14).forEach((topicId) => {
+      chooseQuestion(
+        BANK.questions.filter(
+          (question) =>
+            question.topicId === topicId && question.difficulty === "challenge",
+        ),
+        selected,
+      );
+    });
+    chooseQuestion(
+      BANK.questions.filter((question) => question.difficulty === "standard"),
+      selected,
+    );
+
+    return shuffle([...selected]);
+  }
+
+  function assembleMiraCostaCoverage() {
+    const selected = new Set();
+    DATA.topics.forEach((topic) => {
+      chooseQuestion(
+        BANK.questions.filter(
+          (question) =>
+            question.topicId === topic.id && question.difficulty === "standard",
+        ),
+        selected,
+      );
+    });
+    return shuffle([...selected]);
+  }
+
+  function assembleMiraCostaHistory() {
+    return shuffle(
+      BANK.questions.filter(
+        (question) =>
+          question.sourceFamily.startsWith("Historical") ||
+          question.sourceFamily === "Student-transcribed review",
+      ),
+    )
+      .slice(0, 10)
+      .map((question) => question.id);
+  }
+
+  function assembleMiraCostaCustom(topicValue, difficulty, requestedLength) {
+    const candidates = BANK.questions.filter((question) => {
+      const topicMatch =
+        topicValue === "all" || question.topicId === Number(topicValue);
+      const difficultyMatch =
+        difficulty === "all" || question.difficulty === difficulty;
+      return topicMatch && difficultyMatch;
+    });
+    const selected = new Set();
+
+    if (topicValue === "all" && requestedLength >= DATA.topics.length) {
+      shuffle(DATA.topics).forEach((topic) => {
+        chooseQuestion(
+          candidates.filter((question) => question.topicId === topic.id),
+          selected,
+        );
+      });
+    }
+    shuffle(candidates).forEach((question) => {
+      if (selected.size < requestedLength) selected.add(question.id);
+    });
+    return shuffle([...selected]).slice(0, requestedLength);
+  }
+
+  function startExam(mode, customIds = null, customLabel = null) {
     let ids;
     let label;
     let timed = false;
 
     if (customIds?.length) {
       ids = shuffle(customIds);
-      label = ids.length === 1 ? "SINGLE RETRY" : "TOPIC PRACTICE";
+      label = customLabel || (ids.length === 1 ? "SINGLE RETRY" : "TOPIC PRACTICE");
+    } else if (mode === "miracosta-full") {
+      ids = assembleMiraCostaFull();
+      label = "MIRACOSTA COMPREHENSIVE";
+    } else if (mode === "miracosta-coverage") {
+      ids = assembleMiraCostaCoverage();
+      label = "MIRACOSTA COVERAGE CHECK";
+    } else if (mode === "miracosta-history") {
+      ids = assembleMiraCostaHistory();
+      label = "MIRACOSTA HISTORICAL STYLE";
     } else if (mode === "quick") {
       ids = assembleQuickExam();
       label = "FOCUS SPRINT";
@@ -378,6 +552,7 @@
       timed = true;
     }
 
+    state.returnView = mode.startsWith("miracosta") ? "miracosta" : "exam";
     stopTimer();
     state.session = {
       mode,
@@ -533,6 +708,13 @@
         : "Repair this concept now.";
     el.feedbackExplanation.textContent = question.explanation;
     el.correctAnswer.innerHTML = `<strong>Reference answer:</strong> ${escapeHtml(answerLabel(question))}`;
+    if (question.sourceUrl) {
+      el.feedbackSource.hidden = false;
+      el.feedbackSource.innerHTML = `<strong>Source trail:</strong> ${escapeHtml(question.sourceFamily)} · ${escapeHtml(question.sourceConfidence.toUpperCase())} CONFIDENCE · <a href="${escapeHtml(question.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(question.sourceTitle)} ↗</a>`;
+    } else {
+      el.feedbackSource.hidden = true;
+      el.feedbackSource.innerHTML = "";
+    }
     el.selfGrade.hidden = !manual;
     el.nextQuestion.hidden = manual;
     el.feedback.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -547,7 +729,9 @@
       userAnswer,
     });
     if (correct) {
-      if (state.session.mode === "mistakes") markResolved(question);
+      if (state.session.mode === "mistakes" || state.session.mode === "retry") {
+        markResolved(question);
+      }
     } else {
       recordWrong(question, userAnswer);
     }
@@ -700,7 +884,7 @@
     el.examSession.hidden = true;
     el.examResults.hidden = true;
     el.examSetup.hidden = false;
-    showView("exam");
+    showView(state.returnView);
   }
 
   function renderMistakes() {
@@ -777,6 +961,39 @@
       return;
     }
 
+    const miraTopicButton = event.target.closest("[data-miracosta-topic]");
+    if (miraTopicButton) {
+      const topicId = Number(miraTopicButton.dataset.miracostaTopic);
+      const ids = BANK.questions
+        .filter((question) => question.topicId === topicId)
+        .map((question) => question.id);
+      startExam(
+        "miracosta-topic",
+        ids,
+        `MIRACOSTA TOPIC ${topicId}`,
+      );
+      return;
+    }
+
+    const miraCustomButton = event.target.closest("#start-miracosta-custom");
+    if (miraCustomButton) {
+      const requestedLength = Number(el.miraLengthFilter.value);
+      const ids = assembleMiraCostaCustom(
+        el.miraTopicFilter.value,
+        el.miraDifficultyFilter.value,
+        requestedLength,
+      );
+      if (!ids.length) {
+        showToast("No MiraCosta questions match these filters.");
+        return;
+      }
+      if (ids.length < requestedLength) {
+        showToast(`This filter contains ${ids.length} unique questions; all were selected.`);
+      }
+      startExam("miracosta-custom", ids, "MIRACOSTA CUSTOM SET");
+      return;
+    }
+
     const unitButton = event.target.closest("[data-unit]");
     if (unitButton) {
       state.unitFilter = unitButton.dataset.unit;
@@ -842,6 +1059,7 @@
     renderOverview();
     renderTopicFilters();
     renderTopics();
+    renderMiraCostaBank();
     renderMistakes();
     renderTimer();
 
