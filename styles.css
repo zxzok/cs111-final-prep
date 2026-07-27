@@ -739,6 +739,327 @@ a:focus-visible {
   border-bottom: 1px solid var(--line);
 }
 
+.bank-hero {
+  width: min(1240px, calc(100% - 48px));
+  margin: 58px auto 0;
+  padding: clamp(34px, 6vw, 76px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.6fr);
+  gap: 48px;
+  align-items: end;
+  color: #fff;
+  background:
+    linear-gradient(125deg, rgba(255, 107, 53, 0.18), transparent 44%),
+    var(--ink);
+  box-shadow: 14px 14px 0 var(--accent-soft);
+}
+
+.bank-hero h1 {
+  max-width: 820px;
+  margin: 0;
+  font: 900 clamp(44px, 6.4vw, 84px) / 0.95 Georgia, "Times New Roman", serif;
+  letter-spacing: -0.05em;
+}
+
+.bank-hero > div:first-child > p:last-child {
+  max-width: 720px;
+  margin: 28px 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.bank-number {
+  padding-left: 34px;
+  border-left: 1px solid var(--line-dark);
+}
+
+.bank-number strong {
+  display: block;
+  color: var(--accent);
+  font: 900 clamp(78px, 10vw, 136px) / 0.8 Georgia, "Times New Roman", serif;
+  letter-spacing: -0.08em;
+}
+
+.bank-number span {
+  display: block;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.62);
+  font: 800 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.bank-stats,
+.bank-modes,
+.bank-builder,
+.bank-coverage-section,
+.bank-sources-section {
+  width: min(1240px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.bank-stats {
+  margin-top: 58px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-block: 1px solid var(--line);
+}
+
+.bank-stats > div {
+  min-height: 128px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line);
+}
+
+.bank-stats > div:last-child {
+  border-right: 0;
+}
+
+.bank-stats strong {
+  font: 900 38px/1 Georgia, "Times New Roman", serif;
+}
+
+.bank-stats span {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.bank-modes {
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+}
+
+.bank-mode {
+  min-height: 340px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  border-right: 1px solid var(--line);
+}
+
+.bank-mode:last-child {
+  border-right: 0;
+}
+
+.bank-mode > span,
+.bank-source-card small {
+  color: var(--teal);
+  font: 800 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.bank-mode > strong {
+  margin-top: 36px;
+  font: 900 clamp(26px, 2.7vw, 38px) / 1.08 Georgia, "Times New Roman", serif;
+}
+
+.bank-mode p {
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.bank-mode .button {
+  margin-top: auto;
+}
+
+.bank-mode-featured {
+  color: #fff;
+  background: var(--teal);
+}
+
+.bank-mode-featured > span,
+.bank-mode-featured p {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.bank-builder {
+  margin-top: 44px;
+  padding: 42px;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.25fr);
+  gap: 60px;
+  align-items: end;
+  color: #fff;
+  background: var(--ink);
+}
+
+.bank-builder h2 {
+  margin: 0;
+  font: 900 clamp(32px, 4vw, 52px) / 1 Georgia, "Times New Roman", serif;
+}
+
+.bank-builder > div:first-child > p:last-child {
+  color: rgba(255, 255, 255, 0.64);
+  line-height: 1.65;
+}
+
+.bank-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.bank-controls label {
+  display: grid;
+  gap: 8px;
+}
+
+.bank-controls label > span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bank-controls select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--line-dark);
+  border-radius: 0;
+  color: #fff;
+  background: #1d293c;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.bank-controls .button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.bank-coverage-section,
+.bank-sources-section {
+  padding-top: 104px;
+}
+
+.bank-coverage-section .section-intro,
+.bank-sources-section .section-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.6fr);
+  column-gap: 80px;
+}
+
+.bank-coverage-section .section-intro .eyebrow,
+.bank-sources-section .section-intro .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.bank-topic-grid {
+  margin-top: 46px;
+  border-top: 1px solid var(--line);
+}
+
+.bank-topic-card {
+  min-height: 90px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.bank-topic-card > span {
+  color: var(--accent);
+  font: 900 15px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.bank-topic-card > div {
+  display: grid;
+  gap: 7px;
+}
+
+.bank-topic-card strong {
+  font-size: 18px;
+}
+
+.bank-topic-card small {
+  color: var(--ink-soft);
+}
+
+.bank-topic-card button {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bank-source-list {
+  margin-top: 46px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.bank-source-card {
+  min-height: 310px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.bank-source-card > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.source-confidence {
+  padding: 4px 6px;
+  color: var(--green);
+  border: 1px solid currentColor;
+  font: 800 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.source-confidence.medium {
+  color: #8f5c00;
+}
+
+.bank-source-card h3 {
+  margin: 26px 0 12px;
+  font: 900 23px/1.15 Georgia, "Times New Roman", serif;
+}
+
+.bank-source-card p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.bank-source-card a {
+  margin-top: auto;
+  padding-top: 24px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.bank-boundary {
+  margin-top: 104px;
+}
+
 .exam-setup,
 .exam-session,
 .exam-results {
@@ -998,6 +1319,18 @@ a:focus-visible {
   color: #fff;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.feedback-source {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.feedback-source a {
+  color: var(--accent);
+  text-underline-offset: 3px;
 }
 
 .self-grade {
@@ -1294,6 +1627,41 @@ footer p {
     grid-template-columns: 1fr;
   }
 
+  .bank-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bank-stats > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .bank-stats > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bank-modes,
+  .bank-builder {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-mode {
+    min-height: 260px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bank-mode:last-child {
+    border-bottom: 0;
+  }
+
+  .bank-builder {
+    gap: 30px;
+  }
+
+  .bank-source-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .mode-selector article {
     min-height: 250px;
     border-right: 0;
@@ -1441,6 +1809,12 @@ footer p {
   .workspace-heading,
   .topic-filter,
   .topic-list,
+  .bank-hero,
+  .bank-stats,
+  .bank-modes,
+  .bank-builder,
+  .bank-coverage-section,
+  .bank-sources-section,
   .exam-setup,
   .exam-session,
   .exam-results,
@@ -1477,6 +1851,72 @@ footer p {
   .workspace-heading h1,
   .section-intro h2 {
     font-size: 42px;
+  }
+
+  .bank-hero {
+    margin-top: 24px;
+    padding: 42px 26px;
+    grid-template-columns: 1fr;
+  }
+
+  .bank-hero h1 {
+    font-size: 48px;
+  }
+
+  .bank-number {
+    padding: 26px 0 0;
+    border-top: 1px solid var(--line-dark);
+    border-left: 0;
+  }
+
+  .bank-number strong {
+    font-size: 86px;
+  }
+
+  .bank-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-stats > div,
+  .bank-stats > div:nth-child(2) {
+    min-height: 105px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bank-stats > div:last-child {
+    border-bottom: 0;
+  }
+
+  .bank-builder {
+    padding: 30px 24px;
+  }
+
+  .bank-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-coverage-section .section-intro,
+  .bank-sources-section .section-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-topic-card {
+    padding: 18px 0;
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .bank-topic-card button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .bank-source-list {
+    grid-template-columns: 1fr;
+  }
+
+  .bank-source-card {
+    min-height: 260px;
   }
 
   .topic-item summary {
